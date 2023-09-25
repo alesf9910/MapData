@@ -1,0 +1,3 @@
+C:\Users\Alejandro\source\repos\MapData\MapData\bin\Release\net7.0\publish\MapData.dll
+C:\Users\Alejandro\source\repos\MapData\MapData\bin\Release\net7.0\publish\MapData.deps.json
+C:\Users\Alejandro\source\repos\MapData\MapData\bin\Release\net7.0\publish\MapData.pdb

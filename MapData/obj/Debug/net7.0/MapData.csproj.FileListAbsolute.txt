@@ -1,0 +1,12 @@
+C:\Users\Alejandro\source\repos\MapData\MapData\bin\Debug\net7.0\MapData.deps.json
+C:\Users\Alejandro\source\repos\MapData\MapData\bin\Debug\net7.0\MapData.dll
+C:\Users\Alejandro\source\repos\MapData\MapData\bin\Debug\net7.0\MapData.pdb
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.csproj.AssemblyReference.cache
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.AssemblyInfoInputs.cache
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.AssemblyInfo.cs
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.csproj.CoreCompileInputs.cache
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.dll
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\refint\MapData.dll
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\MapData.pdb
+C:\Users\Alejandro\source\repos\MapData\MapData\obj\Debug\net7.0\ref\MapData.dll
