@@ -11,6 +11,9 @@ namespace MapData.SourceGenerators
     [Generator]
     public class MapDataGenerator : IIncrementalGenerator
     {
+        public HashSet<string> fields_;
+        public StringBuilder methods_;
+        public StringBuilder class_;
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var provider = context.SyntaxProvider.CreateSyntaxProvider(
@@ -32,33 +35,37 @@ namespace MapData.SourceGenerators
                     .GetDeclaredSymbol(st) as INamedTypeSymbol;
 
                 if (symbol?.GetAttributes().Select(a => a.AttributeClass.Name == "MapDataAttribute").Count() == 0) continue;
-
-                var (className, classCode) = GetClassCode(symbol);
+                fields_ = new HashSet<string>();
+                methods_ = new StringBuilder();
+                class_ = new StringBuilder();
+                var className = GetClassCode(symbol);
 
                 var builder = new StringBuilder();
-                builder.AppendLine(classCode);
+                builder.AppendLine(class_.ToString());
 
                 var methods = symbol?.GetMembers().OfType<IMethodSymbol>();
                 if (methods == null) continue;
                 foreach (var method in methods)
                 {
-                    builder.AppendLine(GetMethodCode(method));
+                    GetMethodCode(method);
                 }
+                builder.AppendLine(string.Join("\n", fields_));
+                builder.AppendLine(methods_.ToString());
+                builder.AppendLine("}");
                 builder.AppendLine("}");
                 context.AddSource($"{className}.g.cs", SourceText.From(builder.ToString(), Encoding.UTF8));
             }
         }
-        private (string, string) GetClassCode(INamedTypeSymbol namedTypeSymbol)
+        private string GetClassCode(INamedTypeSymbol namedTypeSymbol)
         {
-            var builder = new StringBuilder();
             var name = namedTypeSymbol.Name.Substring(1);
             var nts = namedTypeSymbol.ContainingNamespace.GetNamespaceMembers().Select(ns => ns.Name);
-            builder.AppendLine(GetUsings(namedTypeSymbol));
-            builder.AppendLine($"namespace {GetNameSpace(namedTypeSymbol)};");
-            builder.AppendLine($"public class {name} : {namedTypeSymbol.Name} {{");
-            return (name, builder.ToString());
+            class_.AppendLine(GetUsings(namedTypeSymbol));
+            class_.AppendLine($"namespace {GetNameSpace(namedTypeSymbol)} {{");
+            class_.AppendLine($"public class {name} : {namedTypeSymbol.Name} {{");
+            return name;
         }
-        private string GetMethodCode(IMethodSymbol method)
+        private void GetMethodCode(IMethodSymbol method)
         {
             var builder = new StringBuilder();
             var source = method.Parameters[0];
@@ -72,11 +79,11 @@ namespace MapData.SourceGenerators
                 var p = GetPropertyCode(prop, source.Type, method.GetAttributes(), source.Name);
                 if (p != null) propsCode.Add(p);
             }
-            builder.AppendLine(string.Join("\n", propsCode));
+            builder.AppendLine(string.Join(",\n", propsCode));
             builder.AppendLine("};");
             builder.AppendLine("return result;");
             builder.AppendLine("}");
-            return builder.ToString();
+            methods_.Append(builder.ToString());
         }
         private string GetPropertyCode(IPropertySymbol property, ITypeSymbol sourceType, ImmutableArray<AttributeData> attrs, string source)
         {
@@ -112,7 +119,7 @@ namespace MapData.SourceGenerators
                             propertySource = attr.ConstructorArguments[1].Value as string;
                             converterName = attr.ConstructorArguments[2].Value as string;
                         }
-                        return $"{property.Name} = {converterName}.ConvertFrom({source}.{propertySource})";
+                        return $"{property.Name} = {AddField(converterName)}.ConvertFrom({source}.{propertySource})";
                     }
                 }
             }
@@ -144,6 +151,11 @@ namespace MapData.SourceGenerators
                 }
             }
             return builder.ToString();
+        }
+        private string AddField(string name){
+            string res = name + "_";
+            fields_.Add($"private {name} {res} = new {name}();");
+            return res;
         }
     }
 }
